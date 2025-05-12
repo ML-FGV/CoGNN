@@ -15,6 +15,8 @@ from models.CoGNN import CoGNN
 from helpers.dataset_classes.dataset import DatasetBySplit
 
 
+import wandb
+
 class Experiment(object):
     def __init__(self, args: Namespace):
         super().__init__()
@@ -97,6 +99,15 @@ class Experiment(object):
             print(f'Final Rewired train={round(metrics_mean[0], self.decimal)}+-{round(metrics_std[0], self.decimal)},'
                   f'val={round(metrics_mean[1], self.decimal)}+-{round(metrics_std[1], self.decimal)},'
                   f'test={round(metrics_mean[2], self.decimal)}+-{round(metrics_std[2], self.decimal)}')
+
+            wandb.log({
+                "train_mean": metrics_mean[0],
+                "train_std":  metrics_std[0],
+                "val_mean":   metrics_mean[1],
+                "val_std":    metrics_std[1],
+                "test_mean":  metrics_mean[2],
+                "test_std":   metrics_std[2],
+            })
     
         return metrics_mean, edge_ratios
             
@@ -153,6 +164,15 @@ class Experiment(object):
             log_str += f"({round(best_losses_n_metrics.test_metric, self.decimal)})"
             pbar.set_description(log_str)
             pbar.update(n=1)
+
+            wandb.log({
+                f"fold_{num_fold}.train_loss":  float(round(losses_n_metrics.train_loss,  self.decimal)),
+                f"fold_{num_fold}.val_loss":    float(round(losses_n_metrics.val_loss,    self.decimal)),
+                f"fold_{num_fold}.test_loss":   float(round(losses_n_metrics.test_loss,   self.decimal)),
+                f"fold_{num_fold}.train_metric":float(round(losses_n_metrics.train_metric,self.decimal)),
+                f"fold_{num_fold}.val_metric":  float(round(losses_n_metrics.val_metric,  self.decimal)),
+                f"fold_{num_fold}.test_metric": float(round(losses_n_metrics.test_metric, self.decimal)),
+            }, step=epoch)
 
         edge_ratios = None
         if self.dataset.not_synthetic():

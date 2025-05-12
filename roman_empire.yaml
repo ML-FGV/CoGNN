@@ -1,0 +1,38 @@
+project: CoGNN
+name: roman_empire
+program: main.py
+method: grid
+
+metric:
+  name: val_mean
+  goal: maximize
+
+parameters:
+  env_num_layers:
+    values: [5, 6, 7, 8, 9, 10, 11, 12]
+  env_dim:
+    values: [128, 256, 512]
+  env_model_type:
+    values: ["MEAN_GNN", "SUM_GNN"]
+  act_num_layers:
+    values: [1, 2, 3]
+  act_dim:
+    values: [4, 8, 16]
+  act_model_type:
+    values: ["MEAN_GNN", "SUM_GNN"]
+  tau0:
+    values: [0.0, 0.1]
+  lr:
+    values: [0.003, 0.00003]
+
+command:
+  - ${env}
+  - "uv"
+  - "run"
+  - ${program}
+  - "--dataset=roman_empire"
+  - "--learn_temp"
+  - "--skip"
+  - "--layer_norm"
+  - ${args}
+
