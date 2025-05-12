@@ -27,8 +27,7 @@ parameters:
 
 command:
   - ${env}
-  - "uv"
-  - "run"
+  - "python"
   - ${program}
   - "--dataset=tolokers"
   - "--learn_temp"

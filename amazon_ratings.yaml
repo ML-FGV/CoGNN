@@ -27,8 +27,7 @@ parameters:
 
 command:
   - ${env}
-  - "uv"
-  - "run"
+  - "python"
   - ${program}
   - "--dataset=amazon_ratings"
   - "--learn_temp"

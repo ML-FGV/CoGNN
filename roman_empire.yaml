@@ -27,8 +27,7 @@ parameters:
 
 command:
   - ${env}
-  - "uv"
-  - "run"
+  - "python"
   - ${program}
   - "--dataset=roman_empire"
   - "--learn_temp"

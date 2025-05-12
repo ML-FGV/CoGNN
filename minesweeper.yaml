@@ -27,8 +27,7 @@ parameters:
 
 command:
   - ${env}
-  - "uv"
-  - "run"
+  - "python"
   - ${program}
   - "--dataset=minesweeper"
   - "--learn_temp"

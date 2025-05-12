@@ -27,8 +27,7 @@ parameters:
 
 command:
   - ${env}
-  - "uv"
-  - "run"
+  - "python"
   - ${program}
   - "--dataset=questions"
   - "--learn_temp"
