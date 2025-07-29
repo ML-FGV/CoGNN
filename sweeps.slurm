@@ -1,10 +1,9 @@
 #!/bin/bash
-#SBATCH --job-name=cooperative_sheaves
+#SBATCH --job-name=CoGNN
 #SBATCH --gres=gpu:1
-#SBATCH --partition=gpu-a100-80g,gpu-h100-80g
 #SBATCH --time=2-00:00:00
-#SBATCH --cpus-per-task=4
-#SBATCH --mem=80G
+#SBATCH --cpus-per-task=16
+#SBATCH --mem=64G
 #SBATCH --output=logs/%x-%A_%a.out
 #SBATCH --array=0-49
 
@@ -15,11 +14,11 @@ export WANDB_API_KEY=0966ca370400b75fea100ca719360624e659271f
 export WANDB__SERVICE_WAIT=300
 
 SWEEP_IDS=(
-  "juanbelieni/coopshv_sweeps/n0rmwhna" # Amazon ratings
-  "juanbelieni/coopshv_sweeps/nylv1ymp" # Roman Empire
-  "juanbelieni/coopshv_sweeps/dxqkehf6" # Questions
-  "juanbelieni/coopshv_sweeps/vx4irq3d" # Tolokers
-  "juanbelieni/coopshv_sweeps/9m5j6g0x" # Minesweeper
+  # "juanbelieni/coopshv_sweeps/n0rmwhna" # Amazon ratings
+  # "juanbelieni/coopshv_sweeps/nylv1ymp" # Roman Empire
+  # "juanbelieni/coopshv_sweeps/dxqkehf6" # Questions
+  # "juanbelieni/coopshv_sweeps/vx4irq3d" # Tolokers
+  # "juanbelieni/coopshv_sweeps/9m5j6g0x" # Minesweeper
   "andrerg00/CoGNN/cy9eti9v" # Chameleon
   "andrerg00/CoGNN/avam8ee1" # Squirrel
 )
