@@ -6,7 +6,7 @@ from torch import Tensor
 from typing import NamedTuple, Optional, List, Union, Callable
 from torch_geometric.data import Data
 import torch_geometric.transforms as T
-from torch_geometric.datasets import HeterophilousGraphDataset
+#from torch_geometric.datasets import HeterophilousGraphDataset
 import json
 import numpy as np
 
@@ -14,6 +14,7 @@ from helpers.dataset_classes.root_neighbours_dataset import RootNeighboursDatase
 from helpers.dataset_classes.cycles_dataset import CyclesDataset
 from helpers.dataset_classes.lrgb import PeptidesFunctionalDataset
 from helpers.dataset_classes.classic_datasets import Planetoid
+from helpers.dataset_classes.heterophilous_graphs import HeterophilousGraphDataset
 from helpers.constants import ROOT_DIR
 from helpers.metrics import MetricType
 from helpers.classes import ActivationType, Pool, ModelType
@@ -55,6 +56,10 @@ class DataSet(Enum):
     tolokers = auto()
     questions = auto()
 
+    # heterophilic directed
+    chameleon = auto()
+    squirrel = auto()
+
     # synthetic
     root_neighbours = auto()
     cycles = auto()
@@ -86,7 +91,7 @@ class DataSet(Enum):
         
     def get_family(self) -> DataSetFamily:
         if self in [DataSet.roman_empire, DataSet.amazon_ratings, DataSet.minesweeper,
-                    DataSet.tolokers, DataSet.questions]:
+                    DataSet.tolokers, DataSet.questions, DataSet.chameleon, DataSet.squirrel]:
             return DataSetFamily.heterophilic
         elif self in [DataSet.root_neighbours, DataSet.cycles]:
             return DataSetFamily.synthetic
@@ -137,6 +142,12 @@ class DataSet(Enum):
         root = osp.join(ROOT_DIR, 'datasets')
         if self.get_family() is DataSetFamily.heterophilic:
             name = self.name.replace('_', '-').capitalize()
+            if name == 'Chameleon':
+                name = 'chameleon_filtered_directed'
+                dataset = [HeterophilousGraphDataset(root=root, name=name)[0]]
+            elif name == 'Squirrel':
+                name = 'squirrel_filtered_directed'
+                dataset = [HeterophilousGraphDataset(root=root, name=name)[0]]
             dataset = [HeterophilousGraphDataset(root=root, name=name, transform=T.ToUndirected())[0]]
         elif self.get_family() in [DataSetFamily.social_networks, DataSetFamily.proteins]:
             tu_dataset_name = self.name.upper().replace('_', '-')
@@ -196,7 +207,7 @@ class DataSet(Enum):
 
     def get_metric_type(self) -> MetricType:
         if self.get_family() in [DataSetFamily.social_networks, DataSetFamily.proteins, DataSetFamily.homophilic]\
-                or self in [DataSet.roman_empire, DataSet.amazon_ratings, DataSet.cycles]:
+                or self in [DataSet.roman_empire, DataSet.amazon_ratings, DataSet.cycles, DataSet.squirrel, DataSet.chameleon]:
             return MetricType.ACCURACY
         elif self in [DataSet.minesweeper, DataSet.tolokers, DataSet.questions]:
             return MetricType.AUC_ROC
