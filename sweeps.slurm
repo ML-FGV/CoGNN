@@ -20,6 +20,8 @@ SWEEP_IDS=(
   "juanbelieni/coopshv_sweeps/dxqkehf6" # Questions
   "juanbelieni/coopshv_sweeps/vx4irq3d" # Tolokers
   "juanbelieni/coopshv_sweeps/9m5j6g0x" # Minesweeper
+  "andrerg00/CoGNN/cy9eti9v" # Chameleon
+  "andrerg00/CoGNN/avam8ee1" # Squirrel
 )
 
 NUM_SWEEPS=${#SWEEP_IDS[@]}
