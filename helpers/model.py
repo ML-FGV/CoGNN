@@ -2,7 +2,7 @@ from enum import Enum, auto
 from torch.nn import Module
 from typing import List, Callable
 
-from models.layers import WeightedGCNConv, WeightedGINConv, WeightedGNNConv, GraphLinear
+from models.layers import WeightedGCNConv, WeightedGINConv, WeightedGNNConv, GraphLinear, GPS
 
 
 class ModelType(Enum):
@@ -12,6 +12,7 @@ class ModelType(Enum):
     GCN = auto()
     GIN = auto()
     LIN = auto()
+    GPS = auto()
 
     SUM_GNN = auto()
     MEAN_GNN = auto()
@@ -32,6 +33,8 @@ class ModelType(Enum):
             return WeightedGNNConv
         elif self is ModelType.LIN:
             return GraphLinear
+        elif self is ModelType.GPS:
+            return GPS
         else:
             raise ValueError(f'model {self.name} not supported')
 
@@ -58,6 +61,9 @@ class ModelType(Enum):
             component_list = \
                 [self.load_component_cls()(in_features=in_dim_i, out_features=out_dim_i, bias=bias)
                  for in_dim_i, out_dim_i in zip(dim_list[:-1], dim_list[1:])]
+        elif self is ModelType.GPS:
+            component_list = [self.load_component_cls()(in_channels=in_dim_i, out_channels=out_dim_i, bias=bias)
+                              for in_dim_i, out_dim_i in zip(dim_list[:-1], dim_list[1:])]
         else:
             raise ValueError(f'model {self.name} not supported')
         return component_list

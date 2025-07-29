@@ -4,6 +4,7 @@ from torch import Tensor
 from torch.nn import Linear, ReLU, BatchNorm1d, Module
 
 from torch_geometric.nn.conv import MessagePassing
+from torch_geometric.nn import GPSConv, GCNConv
 from torch_geometric.nn.conv.gcn_conv import gcn_norm
 from torch_geometric.typing import NoneType  # noqa
 from torch_geometric.typing import (
@@ -99,3 +100,23 @@ class WeightedGNNConv(MolConv):
 class GraphLinear(Linear):
     def forward(self, x: Tensor, edge_index: Adj, edge_attr: OptTensor = None, edge_weight: OptTensor = None) -> Tensor:
         return super().forward(x)
+
+
+class GPS(torch.nn.Module):
+    def __init__(self, in_channels: int, out_channels: int, bias=False):
+        super().__init__()
+
+        self.conv = GPSConv(channels=in_channels, conv=GCNConv(in_channels, in_channels), heads=4, dropout=0.2, attn_dropout=0.2)
+
+        self.mlp = torch.nn.Sequential(
+            Linear(in_channels, in_channels // 2),
+            ReLU(),
+            Linear(in_channels // 2, in_channels // 4),
+            ReLU(),
+            Linear(in_channels // 4, out_channels),
+        )
+
+    def forward(self, x, edge_index, edge_weight=None, edge_attr=None, batch=None):
+        x = self.conv(x, edge_index, edge_weight=edge_weight)
+        
+        return self.mlp(x)
