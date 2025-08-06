@@ -174,7 +174,7 @@ class DRGNN(Module):
         self.batch_norm = BatchNorm1d(hidden_channels)
         pass
 
-    def forward(self, x, edge_index):
+    def forward(self, x, edge_index, edge_attr=None, edge_weight=None):
         x = F.dropout(x, self.dropout, training=self.training)
         x = self.enc(x)
         # x = self.act( self.batch_norm( self.igl(x, edge_index, edge_weight) ) )
