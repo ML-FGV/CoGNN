@@ -11,7 +11,7 @@ if __name__ == '__main__':
         set_device(args.gpu)
 
     wandb.init(
-        project="CoGNN",
+        project="CoGNN_star_models",
         config=args,
     )
 

@@ -15,8 +15,6 @@ from models.CoGNN import CoGNN
 from helpers.dataset_classes.dataset import DatasetBySplit
 
 
-import wandb
-
 class Experiment(object):
     def __init__(self, args: Namespace):
         super().__init__()
@@ -32,6 +30,7 @@ class Experiment(object):
         self.metric_type = self.dataset.get_metric_type()
         self.decimal = self.dataset.num_after_decimal()
         self.task_loss = self.metric_type.get_task_loss()
+        self.args = args
 
         # asserts
         self.dataset.asserts(args)
@@ -56,11 +55,11 @@ class Experiment(object):
                     layer_norm=self.layer_norm, skip=self.skip, batch_norm=self.batch_norm, dropout=self.dropout,
                     act_type=env_act_type, metric_type=self.metric_type, in_dim=dataset[0].x.shape[1], out_dim=out_dim,
                     gin_mlp_func=gin_mlp_func, dec_num_layers=self.dec_num_layers, pos_enc=self.pos_enc,
-                    dataset_encoders=self.dataset.get_dataset_encoders())
+                    dataset_encoders=self.dataset.get_dataset_encoders(), args=self.args)
         action_args = \
             ActionNetArgs(model_type=self.act_model_type, num_layers=self.act_num_layers,
                           hidden_dim=self.act_dim, dropout=self.dropout, act_type=ActivationType.RELU,
-                          env_dim=self.env_dim, gin_mlp_func=gin_mlp_func)
+                          env_dim=self.env_dim, gin_mlp_func=gin_mlp_func, args=self.args)
 
         # folds
         metrics_list = []
@@ -99,22 +98,13 @@ class Experiment(object):
             print(f'Final Rewired train={round(metrics_mean[0], self.decimal)}+-{round(metrics_std[0], self.decimal)},'
                   f'val={round(metrics_mean[1], self.decimal)}+-{round(metrics_std[1], self.decimal)},'
                   f'test={round(metrics_mean[2], self.decimal)}+-{round(metrics_std[2], self.decimal)}')
-
-            wandb.log({
-                "train_mean": metrics_mean[0],
-                "train_std":  metrics_std[0],
-                "val_mean":   metrics_mean[1],
-                "val_std":    metrics_std[1],
-                "test_mean":  metrics_mean[2],
-                "test_std":   metrics_std[2],
-            })
     
         return metrics_mean, edge_ratios
             
     def single_fold(self, dataset_by_split: DatasetBySplit, gumbel_args: GumbelArgs, env_args: EnvArgs,
                     action_args: ActionNetArgs, num_fold: int) -> Tuple[LossesAndMetrics, OptTensor]:
         model = CoGNN(gumbel_args=gumbel_args, env_args=env_args, action_args=action_args,
-                      pool=self.pool).to(device=self.device)
+                      pool=self.pool, args=self.args).to(device=self.device)
 
         optimizer = self.dataset.optimizer(model=model, lr=self.lr, weight_decay=self.weight_decay)
         scheduler = self.dataset.scheduler(optimizer=optimizer, step_size=self.step_size, gamma=self.gamma,
@@ -160,19 +150,12 @@ class Experiment(object):
             # prints
             log_str = f'Split: {num_fold}, epoch: {epoch}'
             for name in losses_n_metrics._fields:
+                if 'loss' in name:
+                    continue
                 log_str += f",{name}={round(getattr(losses_n_metrics, name), self.decimal)}"
             log_str += f"({round(best_losses_n_metrics.test_metric, self.decimal)})"
             pbar.set_description(log_str)
             pbar.update(n=1)
-
-            wandb.log({
-                f"fold_{num_fold}.train_loss":  float(round(losses_n_metrics.train_loss,  self.decimal)),
-                f"fold_{num_fold}.val_loss":    float(round(losses_n_metrics.val_loss,    self.decimal)),
-                f"fold_{num_fold}.test_loss":   float(round(losses_n_metrics.test_loss,   self.decimal)),
-                f"fold_{num_fold}.train_metric":float(round(losses_n_metrics.train_metric,self.decimal)),
-                f"fold_{num_fold}.val_metric":  float(round(losses_n_metrics.val_metric,  self.decimal)),
-                f"fold_{num_fold}.test_metric": float(round(losses_n_metrics.test_metric, self.decimal)),
-            }, step=epoch)
 
         edge_ratios = None
         if self.dataset.not_synthetic():

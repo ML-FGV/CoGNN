@@ -96,6 +96,8 @@ class EnvArgs(NamedTuple):
 
     gin_mlp_func: Callable
 
+    args : Any
+
     def load_net(self) -> ModuleList:
         if self.pos_enc is PosEncoder.NONE:
             enc_list = [self.dataset_encoders.node_encoder(in_dim=self.in_dim, emb_dim=self.env_dim)]
@@ -111,7 +113,7 @@ class EnvArgs(NamedTuple):
         component_list =\
             self.model_type.get_component_list(in_dim=self.env_dim, hidden_dim=self.env_dim,  out_dim=self.env_dim,
                                                num_layers=self.num_layers, bias=True, edges_required=True,
-                                               gin_mlp_func=self.gin_mlp_func)
+                                               gin_mlp_func=self.gin_mlp_func, args=self.args)
 
         if self.dec_num_layers > 1:
             mlp_list = (self.dec_num_layers - 1) * [Linear(self.env_dim, self.env_dim),
@@ -134,11 +136,13 @@ class ActionNetArgs(NamedTuple):
 
     env_dim: int
     gin_mlp_func: Callable
+
+    args : Any
     
     def load_net(self) -> ModuleList:
         net = self.model_type.get_component_list(in_dim=self.env_dim, hidden_dim=self.hidden_dim, out_dim=2,
                                                  num_layers=self.num_layers, bias=True, edges_required=False,
-                                                 gin_mlp_func=self.gin_mlp_func)
+                                                 gin_mlp_func=self.gin_mlp_func, args=self.args)
         return ModuleList(net)
 
 

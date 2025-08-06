@@ -12,12 +12,12 @@ from models.action import ActionNet
 
 
 class CoGNN(Module):
-    def __init__(self, gumbel_args: GumbelArgs, env_args: EnvArgs, action_args: ActionNetArgs, pool: Pool):
+    def __init__(self, gumbel_args: GumbelArgs, env_args: EnvArgs, action_args: ActionNetArgs, pool: Pool, args):
         super(CoGNN, self).__init__()
         self.env_args = env_args
         self.learn_temp = gumbel_args.learn_temp
         if gumbel_args.learn_temp:
-            self.temp_model = TempSoftPlus(gumbel_args=gumbel_args, env_dim=env_args.env_dim)
+            self.temp_model = TempSoftPlus(gumbel_args=gumbel_args, env_dim=env_args.env_dim, args=args)
         self.temp = gumbel_args.temp
 
         self.num_layers = env_args.num_layers
@@ -85,8 +85,8 @@ class CoGNN(Module):
             # environment
             out = self.env_net[1 + gnn_idx](x=x, edge_index=edge_index, edge_weight=edge_weight,
                                             edge_attr=env_edge_embedding)
-            out = self.dropout(out)
-            out = self.act(out)
+            #out = self.dropout(out)
+            #out = self.act(out)
 
             if calc_stats:
                 edge_ratio = edge_weight[edge_ratio_edge_mask].sum() / edge_weight[edge_ratio_edge_mask].shape[0]

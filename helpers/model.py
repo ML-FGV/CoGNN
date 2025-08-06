@@ -3,7 +3,7 @@ from torch.nn import Module
 from typing import List, Callable
 
 from models.layers import WeightedGCNConv, WeightedGINConv, WeightedGNNConv, GraphLinear, GPS
-
+from models.mpnns_model import parse_method
 
 class ModelType(Enum):
     """
@@ -12,10 +12,13 @@ class ModelType(Enum):
     GCN = auto()
     GIN = auto()
     LIN = auto()
-    GPS = auto()
 
     SUM_GNN = auto()
     MEAN_GNN = auto()
+
+    GPS = auto()
+
+    MPNN = auto()
 
     @staticmethod
     def from_string(s: str):
@@ -35,6 +38,8 @@ class ModelType(Enum):
             return GraphLinear
         elif self is ModelType.GPS:
             return GPS
+        elif self is ModelType.MPNN:
+            return parse_method
         else:
             raise ValueError(f'model {self.name} not supported')
 
@@ -42,7 +47,7 @@ class ModelType(Enum):
         return self is ModelType.GCN
 
     def get_component_list(self, in_dim: int, hidden_dim: int, out_dim: int, num_layers: int, bias: bool,
-                           edges_required: bool, gin_mlp_func: Callable) -> List[Module]:
+                           edges_required: bool, gin_mlp_func: Callable, args) -> List[Module]:
         dim_list = [in_dim] + [hidden_dim] * (num_layers - 1) + [out_dim]
         if self is ModelType.GCN:
             component_list = [self.load_component_cls()(in_channels=in_dim_i, out_channels=out_dim_i, bias=bias)
@@ -64,6 +69,9 @@ class ModelType(Enum):
         elif self is ModelType.GPS:
             component_list = [self.load_component_cls()(in_channels=in_dim_i, out_channels=out_dim_i, bias=bias)
                               for in_dim_i, out_dim_i in zip(dim_list[:-1], dim_list[1:])]
+        elif self is ModelType.MPNN:
+            component_list = [self.load_component_cls()(args, None, out_dim_i, in_dim_i, device=args.device)
+                                for in_dim_i, out_dim_i in zip(dim_list[:-1], dim_list[1:])]
         else:
             raise ValueError(f'model {self.name} not supported')
         return component_list
