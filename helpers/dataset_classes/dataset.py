@@ -132,7 +132,7 @@ class DataSet(Enum):
         if self.get_family() in [DataSetFamily.synthetic, DataSetFamily.lrgb]:
             return list(range(1))
         elif self.get_family() in [DataSetFamily.heterophilic, DataSetFamily.homophilic]:
-            return list(range(10))
+            return list(range(3))
         elif self.get_family() in [DataSetFamily.social_networks, DataSetFamily.proteins]:
             return [fold]
         else:
