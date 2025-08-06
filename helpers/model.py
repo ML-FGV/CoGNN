@@ -20,6 +20,8 @@ class ModelType(Enum):
 
     MPNN = auto()
 
+    DRGNN = auto()
+
     @staticmethod
     def from_string(s: str):
         try:
@@ -72,6 +74,11 @@ class ModelType(Enum):
         elif self is ModelType.MPNN:
             component_list = [self.load_component_cls()(args, None, out_dim_i, in_dim_i, device=args.device)
                                 for in_dim_i, out_dim_i in zip(dim_list[:-1], dim_list[1:])]
+        elif self is ModelType.DRGNN:
+            component_list = [self.load_component_cls()(in_channels=in_dim_i, out_channels=out_dim_i, dropout=args.dropout,
+                                                        phantom_grad=args.phantom_grad, beta_init=args.beta_init,
+                                                        gamma_init=args.gamma_init, tol=args.tol)
+                              for in_dim_i, out_dim_i in zip(dim_list[:-1], dim_list[1:])]
         else:
             raise ValueError(f'model {self.name} not supported')
         return component_list

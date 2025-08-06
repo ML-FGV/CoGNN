@@ -111,4 +111,10 @@ def parse_arguments():
     parser.add_argument('--save_model', action='store_true', help='whether to save model')
     parser.add_argument('--model_dir', type=str, default='./model/', help='where to save model')
 
+    # DRGNN
+    parser.add_argument('--phantom_grad', type=int, default=0)
+    parser.add_argument('--beta_init', type=float, default=0.0)
+    parser.add_argument('--gamma_init', type=float, default=1.0)
+    parser.add_argument('--tol', type=float, default=1e-5)
+
     return parser.parse_args()
