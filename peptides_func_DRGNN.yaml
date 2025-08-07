@@ -1,0 +1,57 @@
+project: CoGNN_DRGNN
+name: func
+program: main.py
+method: grid
+
+metric:
+  name: val_mean
+  goal: maximize
+
+parameters:
+  pool:
+    value: MEAN
+  pos_enc:
+    value: RWSE
+  num_warmup_epochs:
+    value: 5
+  env_num_layers:
+    value: 4
+  env_dim:
+    value: 300
+  env_model_type:
+    value: DRGNN
+  act_num_layers:
+    values: [1, 2, 3]
+  act_dim:
+    values: [8, 16, 32]
+  act_model_type:
+    value: DRGNN
+  tau0:
+    value: 0.5
+  lr:
+    value: 0.001
+  weight_decay:
+    value: 1e-8
+  beta_init:
+    value: 2.0
+  gamma_init:
+    value: 0.9
+  phantom_grad:
+    value: 5
+  tol:
+    value: 5e-5
+  dropout:
+    value: 0.2
+  max_epochs:
+    value: 250
+
+command:
+  - ${env}
+  - "python"
+  - ${program}
+  - "--dataset=amazon_ratings"
+  - "--learn_temp"
+  - "--skip"
+  - "--batch_norm"
+  - ${args}
+
