@@ -8,6 +8,8 @@ metric:
   goal: maximize
 
 parameters:
+  local_layers:
+    value: 1
   env_num_layers:
     value: 4
   env_dim:
