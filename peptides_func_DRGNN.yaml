@@ -49,7 +49,7 @@ command:
   - ${env}
   - "python"
   - ${program}
-  - "--dataset=amazon_ratings"
+  - "--dataset=func"
   - "--learn_temp"
   - "--skip"
   - "--batch_norm"
