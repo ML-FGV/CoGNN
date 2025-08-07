@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH --job-name=CoGNN
 #SBATCH --gres=gpu:1
-#SBATCH --time=2-00:00:00
+#SBATCH --time=4-00:00:00
 #SBATCH --cpus-per-task=16
 #SBATCH --mem=64G
 #SBATCH --output=logs/%x-%A_%a.out
@@ -22,9 +22,9 @@ SWEEP_IDS=(
   # "andrerg00/CoGNN/cy9eti9v" # Chameleon
   # "andrerg00/CoGNN/avam8ee1" # Squirrel
   # "andrerg00/CoGNN/yyoa0ntr" # Minesweeper with GPS
-  "andrerg00/CoGNN_GCN/msenz265" # Amazon ratings
-  "andrerg00/CoGNN_GCN/f0gmfuu6" # Minesweeper
-  "andrerg00/CoGNN_GCN/41dow089" # Roman Empire
+  #"andrerg00/CoGNN_GCN/q6uzvh55" # Amazon ratings GCN
+  #"andrerg00/CoGNN_GCN/57j8tzhx" # Minesweeper GCN
+  "andrerg00/CoGNN_GCN/vdji0i95" # Roman Empire GCN
 )
 
 NUM_SWEEPS=${#SWEEP_IDS[@]}
