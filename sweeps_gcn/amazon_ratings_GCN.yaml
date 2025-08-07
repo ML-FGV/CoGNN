@@ -9,9 +9,9 @@ metric:
 
 parameters:
   env_num_layers:
-    values: [4,9,12]
+    value: 4
   env_dim:
-    values: [64, 512]
+    value: 512
   env_model_type:
     value: MPNN
   act_num_layers:
@@ -23,11 +23,13 @@ parameters:
   tau0:
     values: [0.0, 0.1]
   lr:
-    values: [0.01, 0.001]
+    value: 0.001
   gnn:
     value: gcn
   dropout:
-    values: [0.2, 0.5]
+    value: 0.5
+  max_epochs:
+    value: 2000
 
 command:
   - ${env}
