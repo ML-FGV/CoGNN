@@ -17,7 +17,7 @@ class CoGNN(Module):
         self.env_args = env_args
         self.learn_temp = gumbel_args.learn_temp
         if gumbel_args.learn_temp:
-            self.temp_model = TempSoftPlus(gumbel_args=gumbel_args, env_dim=env_args.env_dim, args=args)
+            self.temp_model = TempSoftPlus(gumbel_args=gumbel_args, env_dim=env_args.env_dim)
         self.temp = gumbel_args.temp
 
         self.num_layers = env_args.num_layers

@@ -5,6 +5,7 @@ from typing import List, Callable
 from models.layers import WeightedGCNConv, WeightedGINConv, WeightedGNNConv, GraphLinear, GPS
 from models.mpnns_model import parse_method
 from models.drgnn import DRGNN
+from models.disc_nsd_models import DiscreteBundleSheafDiffusion as ONSD
 
 class ModelType(Enum):
     """
@@ -22,6 +23,8 @@ class ModelType(Enum):
     MPNN = auto()
 
     DRGNN = auto()
+
+    NSD = auto()
 
     @staticmethod
     def from_string(s: str):
@@ -45,6 +48,8 @@ class ModelType(Enum):
             return parse_method
         elif self is ModelType.DRGNN:
             return DRGNN
+        elif self is ModelType.NSD:
+            return ONSD
         else:
             raise ValueError(f'model {self.name} not supported')
 
@@ -52,7 +57,7 @@ class ModelType(Enum):
         return self is ModelType.GCN
 
     def get_component_list(self, in_dim: int, hidden_dim: int, out_dim: int, num_layers: int, bias: bool,
-                           edges_required: bool, gin_mlp_func: Callable, args) -> List[Module]:
+                           edges_required: bool, gin_mlp_func: Callable, args, edge_index) -> List[Module]:
         dim_list = [in_dim] + [hidden_dim] * (num_layers - 1) + [out_dim]
         if self is ModelType.GCN:
             component_list = [self.load_component_cls()(in_channels=in_dim_i, out_channels=out_dim_i, bias=bias)
@@ -83,6 +88,13 @@ class ModelType(Enum):
                                                         phantom_grad=args.phantom_grad, beta_init=args.beta_init,
                                                         gamma_init=args.gamma_init, tol=args.tol)
                               for in_dim_i, out_dim_i in zip(dim_list[:-1], dim_list[1:])]
+        elif self is ModelType.NSD:
+            component_list = []
+            for in_dim_i, out_dim_i in zip(dim_list[:-1], dim_list[1:]):
+                args.input_dim = in_dim_i
+                args.output_dim = out_dim_i
+                args.hidden_channels = out_dim_i
+                component_list.append(self.load_component_cls()(edge_index, args))              
         else:
             raise ValueError(f'model {self.name} not supported')
         return component_list

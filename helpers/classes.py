@@ -48,6 +48,8 @@ class GumbelArgs(NamedTuple):
     tau0: float
     temp: float
     gin_mlp_func: Callable
+    args: Any
+    edge_index: Tensor
 
 
 class Pool(Enum):
@@ -98,6 +100,8 @@ class EnvArgs(NamedTuple):
 
     args : Any
 
+    edge_index: Tensor
+
     def load_net(self) -> ModuleList:
         if self.pos_enc is PosEncoder.NONE:
             enc_list = [self.dataset_encoders.node_encoder(in_dim=self.in_dim, emb_dim=self.env_dim)]
@@ -113,7 +117,7 @@ class EnvArgs(NamedTuple):
         component_list =\
             self.model_type.get_component_list(in_dim=self.env_dim, hidden_dim=self.env_dim,  out_dim=self.env_dim,
                                                num_layers=self.num_layers, bias=True, edges_required=True,
-                                               gin_mlp_func=self.gin_mlp_func, args=self.args)
+                                               gin_mlp_func=self.gin_mlp_func, args=self.args, edge_index=self.edge_index)
 
         if self.dec_num_layers > 1:
             mlp_list = (self.dec_num_layers - 1) * [Linear(self.env_dim, self.env_dim),
@@ -138,11 +142,13 @@ class ActionNetArgs(NamedTuple):
     gin_mlp_func: Callable
 
     args : Any
+
+    edge_index: Tensor
     
     def load_net(self) -> ModuleList:
         net = self.model_type.get_component_list(in_dim=self.env_dim, hidden_dim=self.hidden_dim, out_dim=2,
                                                  num_layers=self.num_layers, bias=True, edges_required=False,
-                                                 gin_mlp_func=self.gin_mlp_func, args=self.args)
+                                                 gin_mlp_func=self.gin_mlp_func, args=self.args, edge_index=self.edge_index)
         return ModuleList(net)
 
 

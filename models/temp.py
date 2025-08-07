@@ -6,12 +6,12 @@ from helpers.classes import GumbelArgs
 
 
 class TempSoftPlus(Module):
-    def __init__(self, gumbel_args: GumbelArgs, env_dim: int, args):
+    def __init__(self, gumbel_args: GumbelArgs, env_dim: int):
         super(TempSoftPlus, self).__init__()
         model_list =\
             gumbel_args.temp_model_type.get_component_list(in_dim=env_dim, hidden_dim=env_dim, out_dim=1, num_layers=1,
                                                            bias=False, edges_required=False,
-                                                           gin_mlp_func=gumbel_args.gin_mlp_func, args=args)
+                                                           gin_mlp_func=gumbel_args.gin_mlp_func, args=gumbel_args.args, edge_index=gumbel_args.edge_index)
         self.linear_model = ModuleList(model_list)
         self.softplus = nn.Softplus(beta=1)
         self.tau0 = gumbel_args.tau0

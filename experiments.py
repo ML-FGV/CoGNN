@@ -38,6 +38,8 @@ class Experiment(object):
 
     def run(self) -> Tuple[Tensor, Tensor]:
         dataset = self.dataset.load(seed=self.seed, pos_enc=self.pos_enc)
+        self.edge_index = dataset[0].edge_index.to(device=self.device)
+        self.args.graph_size = dataset[0].num_nodes
         if self.metric_type.is_multilabel():
             dataset.data.y = dataset.data.y.to(dtype=torch.float)
 
@@ -50,17 +52,17 @@ class Experiment(object):
 
         # named tuples
         gumbel_args = GumbelArgs(learn_temp=self.learn_temp, temp_model_type=self.temp_model_type, tau0=self.tau0,
-                                 temp=self.temp, gin_mlp_func=gin_mlp_func)
+                                 temp=self.temp, gin_mlp_func=gin_mlp_func, args=self.args, edge_index=self.edge_index)
         env_args = \
             EnvArgs(model_type=self.env_model_type, num_layers=self.env_num_layers, env_dim=self.env_dim,
                     layer_norm=self.layer_norm, skip=self.skip, batch_norm=self.batch_norm, dropout=self.dropout,
                     act_type=env_act_type, metric_type=self.metric_type, in_dim=dataset[0].x.shape[1], out_dim=out_dim,
                     gin_mlp_func=gin_mlp_func, dec_num_layers=self.dec_num_layers, pos_enc=self.pos_enc,
-                    dataset_encoders=self.dataset.get_dataset_encoders(), args=self.args)
+                    dataset_encoders=self.dataset.get_dataset_encoders(), args=self.args, edge_index=self.edge_index)
         action_args = \
             ActionNetArgs(model_type=self.act_model_type, num_layers=self.act_num_layers,
                           hidden_dim=self.act_dim, dropout=self.dropout, act_type=ActivationType.RELU,
-                          env_dim=self.env_dim, gin_mlp_func=gin_mlp_func, args=self.args)
+                          env_dim=self.env_dim, gin_mlp_func=gin_mlp_func, args=self.args, edge_index=self.edge_index)
 
         # folds
         metrics_list = []
