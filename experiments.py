@@ -7,6 +7,7 @@ from torch_geometric.loader import DataLoader
 from torch import Tensor
 from torch_geometric.typing import OptTensor
 import numpy as np
+import wandb
 
 from helpers.classes import GumbelArgs, EnvArgs, ActionNetArgs, ActivationType
 from helpers.metrics import LossesAndMetrics
@@ -99,6 +100,14 @@ class Experiment(object):
                   f'val={round(metrics_mean[1], self.decimal)}+-{round(metrics_std[1], self.decimal)},'
                   f'test={round(metrics_mean[2], self.decimal)}+-{round(metrics_std[2], self.decimal)}')
     
+        #log results to wandb
+        wandb.log({"train_mean": round(metrics_mean[0], self.decimal),
+                   "val_mean": round(metrics_mean[1], self.decimal),
+                   "test_mean": round(metrics_mean[2], self.decimal),
+                   "train_std": round(metrics_std[0], self.decimal),
+                   "val_std": round(metrics_std[1], self.decimal),
+                   "test_std": round(metrics_std[2], self.decimal)})
+
         return metrics_mean, edge_ratios
             
     def single_fold(self, dataset_by_split: DatasetBySplit, gumbel_args: GumbelArgs, env_args: EnvArgs,
