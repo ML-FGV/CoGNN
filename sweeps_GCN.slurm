@@ -25,8 +25,9 @@ SWEEP_IDS=(
   # "andrerg00/CoGNN_GCN/s7a9hkgt" # Amazon ratings GCN
   # "andrerg00/CoGNN_GCN/gq0cu6d6" # Minesweeper GCN
   # "andrerg00/CoGNN_GCN/4ou37zta" # Roman Empire GCN
-    "andrerg00/CoGNN_NotStarGCN/y7580ut" # Minesweeper
-    "andrerg00/CoGNN_NotStarGCN/hse397jk" # Roman empire
+    "andrerg00/CoGNN_NotStarGCN/p3opz4pe" # Minesweeper
+    "andrerg00/CoGNN_NotStarGCN/q853725p" # Roman empire
+    "andrerg00/CoGNN_NotStarGCN/8jyyo9om" # Amazon ratings
 )
 
 NUM_SWEEPS=${#SWEEP_IDS[@]}
