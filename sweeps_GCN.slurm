@@ -5,7 +5,7 @@
 #SBATCH --cpus-per-task=16
 #SBATCH --mem=64G
 #SBATCH --output=logs/%x-%A_%a.out
-#SBATCH --array=0-99
+#SBATCH --array=0-199
 
 source /home/parentd1/.bashrc
 conda activate cooperative_sheaves
@@ -25,9 +25,9 @@ SWEEP_IDS=(
   # "andrerg00/CoGNN_GCN/s7a9hkgt" # Amazon ratings GCN
   # "andrerg00/CoGNN_GCN/gq0cu6d6" # Minesweeper GCN
   # "andrerg00/CoGNN_GCN/4ou37zta" # Roman Empire GCN
-    "andrerg00/CoGNN_NotStarGCN/p3opz4pe" # Minesweeper
-    "andrerg00/CoGNN_NotStarGCN/q853725p" # Roman empire
-    "andrerg00/CoGNN_NotStarGCN/8jyyo9om" # Amazon ratings
+    "andrerg00/CoGNN_StarGCN/vn7vqoo1" # Minesweeper
+    "andrerg00/CoGNN_StarGCN/ckygcdu2" # Roman empire
+    "andrerg00/CoGNN_StarGCN/034nbl7m" # Amazon ratings
 )
 
 NUM_SWEEPS=${#SWEEP_IDS[@]}
