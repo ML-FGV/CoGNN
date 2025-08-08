@@ -61,7 +61,7 @@ class WeightedGCNConv(MolConv):
         edge_index, edge_weight = gcn_norm(  # yapf: disable
             edge_index, edge_weight, x.size(self.node_dim),
             self.improved, self.add_self_loops, self.flow, x.dtype)
-        out = self.propagate(edge_index, x=x, edge_weight=edge_weight, size=None, edge_attr=edge_attr)
+        out = self.propagate(edge_index, x=x, edge_attr=edge_attr, edge_weight=edge_weight)
         out = self.lin(out)
         return out
 
