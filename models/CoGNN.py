@@ -85,8 +85,8 @@ class CoGNN(Module):
             # environment
             out = self.env_net[1 + gnn_idx](x=x, edge_index=edge_index, edge_weight=edge_weight,
                                             edge_attr=env_edge_embedding)
-            #out = self.dropout(out)
-            #out = self.act(out)
+            out = self.dropout(out)
+            out = self.act(out)
 
             if calc_stats:
                 edge_ratio = edge_weight[edge_ratio_edge_mask].sum() / edge_weight[edge_ratio_edge_mask].shape[0]
