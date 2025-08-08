@@ -40,7 +40,7 @@ class MolConv(MessagePassing):
         
         return aggr_out
 
-class WeightedGNNConv(MolConv):
+class WeightedGCNConv(MolConv):
     def __init__(self, in_channels: int, out_channels: int, aggr='add', bias=True):
         super().__init__(aggr=aggr)
         self.in_channels = in_channels
