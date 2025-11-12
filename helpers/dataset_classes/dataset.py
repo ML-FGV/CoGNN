@@ -60,6 +60,12 @@ class DataSet(Enum):
     chameleon = auto()
     squirrel = auto()
 
+    # small heterophilic
+    actor = auto()
+    texas = auto()
+    cornell = auto()
+    wisconsin = auto()
+
     # synthetic
     root_neighbours = auto()
     cycles = auto()
@@ -91,7 +97,8 @@ class DataSet(Enum):
         
     def get_family(self) -> DataSetFamily:
         if self in [DataSet.roman_empire, DataSet.amazon_ratings, DataSet.minesweeper,
-                    DataSet.tolokers, DataSet.questions, DataSet.chameleon, DataSet.squirrel]:
+                    DataSet.tolokers, DataSet.questions, DataSet.chameleon, DataSet.squirrel,
+                    DataSet.actor, DataSet.texas, DataSet.cornell, DataSet.wisconsin]:
             return DataSetFamily.heterophilic
         elif self in [DataSet.root_neighbours, DataSet.cycles]:
             return DataSetFamily.synthetic
@@ -207,7 +214,8 @@ class DataSet(Enum):
 
     def get_metric_type(self) -> MetricType:
         if self.get_family() in [DataSetFamily.social_networks, DataSetFamily.proteins, DataSetFamily.homophilic]\
-                or self in [DataSet.roman_empire, DataSet.amazon_ratings, DataSet.cycles, DataSet.squirrel, DataSet.chameleon]:
+                or self in [DataSet.roman_empire, DataSet.amazon_ratings, DataSet.cycles, DataSet.squirrel, DataSet.chameleon,
+                            DataSet.actor, DataSet.texas, DataSet.cornell, DataSet.wisconsin]:
             return MetricType.ACCURACY
         elif self in [DataSet.minesweeper, DataSet.tolokers, DataSet.questions]:
             return MetricType.AUC_ROC
