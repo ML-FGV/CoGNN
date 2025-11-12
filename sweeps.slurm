@@ -10,7 +10,7 @@
 source /home/parentd1/.bashrc
 conda activate cooperative_sheaves
 
-export WANDB_API_KEY=0966ca370400b75fea100ca719360624e659271f
+export WANDB_API_KEY=ab6e83a9d99012b14cff411df4e314597d9e6898
 export WANDB__SERVICE_WAIT=300
 
 SWEEP_IDS=(
@@ -21,7 +21,11 @@ SWEEP_IDS=(
   # "juanbelieni/coopshv_sweeps/9m5j6g0x" # Minesweeper
   # "andrerg00/CoGNN/cy9eti9v" # Chameleon
   # "andrerg00/CoGNN/avam8ee1" # Squirrel
-  "andrerg00/CoGNN/yyoa0ntr" # Minesweeper with GPS
+  # "andrerg00/CoGNN/yyoa0ntr" # Minesweeper with GPS
+  andrerg00/CoGNN_small_heterophilous/x08vg56p
+  andrerg00/CoGNN_small_heterophilous/hpyyvyyg
+  andrerg00/CoGNN_small_heterophilous/tjslc22v
+  andrerg00/CoGNN_small_heterophilous/mf1sevuz
 )
 
 NUM_SWEEPS=${#SWEEP_IDS[@]}
