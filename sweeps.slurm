@@ -1,9 +1,9 @@
 #!/bin/bash
 #SBATCH --job-name=CoGNN
 #SBATCH --gres=gpu:1
-#SBATCH --time=2-00:00:00
-#SBATCH --cpus-per-task=16
-#SBATCH --mem=64G
+#SBATCH --time=20:00
+#SBATCH --cpus-per-task=20
+#SBATCH --mem=2G
 #SBATCH --output=logs/%x-%A_%a.out
 #SBATCH --array=0-49
 
