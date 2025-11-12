@@ -1,0 +1,43 @@
+project: CoGNN_small_heterophilous
+name: actor
+program: main.py
+method: grid
+
+metric:
+  name: val_mean
+  goal: maximize
+
+parameters:
+  env_num_layers:
+    values: [1,2]
+  env_dim:
+    values: [16,32]
+  env_model_type:
+    values: ["MEAN_GNN", "SUM_GNN"]
+  act_num_layers:
+    values: [1,2,3]
+  act_dim:
+    values: [16,32]
+  act_model_type:
+    values: ["MEAN_GNN", "SUM_GNN"]
+  tau0:
+    values: [0.0, 0.1]
+  lr:
+    value: 0.02
+  dropout:
+    value: 0.7
+  early_stopping:
+    value: 100
+  max_epochs:
+    value: 500
+
+command:
+  - ${env}
+  - "python"
+  - ${program}
+  - "--dataset=actor"
+  - "--learn_temp"
+  - "--skip"
+  - "--layer_norm"
+  - ${args}
+
